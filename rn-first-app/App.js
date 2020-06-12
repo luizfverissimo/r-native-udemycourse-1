@@ -1,10 +1,17 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from "react";
+import { StyleSheet, Text, View, Button } from "react-native";
 
 export default function App() {
+  const [outputText, setOutputText] = useState("Hello World!");
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <Text>{outputText}</Text>
+      <Button
+        style={styles.button}
+        title="Change Text"
+        onPress={() => setOutputText("Text changed!")}
+      />
     </View>
   );
 }
@@ -12,8 +19,12 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  button: {
+    borderRadius: 20,
   },
 });
