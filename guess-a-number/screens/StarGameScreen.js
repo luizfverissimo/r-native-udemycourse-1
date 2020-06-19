@@ -14,6 +14,7 @@ import {
 import Card from "../components/Card";
 import Colors from "../constants/colors";
 import Input from "../components/Input";
+import NumberContainer from "../components/NumberContainer";
 
 const StarGameScreen = () => {
   /* ---------------------------------- State --------------------------------- */
@@ -23,16 +24,18 @@ const StarGameScreen = () => {
   const [selectedNumber, setSelectedNumber] = useState();
 
   /* -------------------------------- Functions ------------------------------- */
-
+  //adiciona o valor no state
   const numberInputHandler = (inputText) => {
     setEnteredValue(inputText.replace(/[^0-9]/g, ""));
   };
 
+  //Apaga o valor do input e do state
   const resetInputHandler = () => {
     setEnteredValue("");
     setConfirmed(false);
   };
 
+  //confirma o valor para iniciar o jogo e realiza uma validação do valor
   const confirmInputHandler = () => {
     const chosenNumber = parseInt(enteredValue);
     if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
@@ -47,11 +50,19 @@ const StarGameScreen = () => {
     setConfirmed(true);
     setSelectedNumber(chosenNumber);
     setEnteredValue("");
+    Keyboard.dismiss();
   };
 
+  //se foi confirmado, surge o card com o número selecionado e o botão para inciar o jogo
   let confirmedOutput;
   if (confirmed) {
-    confirmedOutput = <Text>Chosen Number: {selectedNumber}</Text>;
+    confirmedOutput = (
+      <Card style={styles.summaryContainer}>
+        <Text>You Selected</Text>
+        <NumberContainer>{selectedNumber}</NumberContainer>
+        <Button title="START GAME" />
+      </Card>
+    );
   }
 
   return (
@@ -133,5 +144,10 @@ const styles = StyleSheet.create({
 
   button: {
     width: "40%",
+  },
+
+  summaryContainer: {
+    marginTop: 20,
+    alignItems: "center",
   },
 });
