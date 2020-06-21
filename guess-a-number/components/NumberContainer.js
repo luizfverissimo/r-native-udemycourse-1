@@ -27,5 +27,6 @@ const styles = StyleSheet.create({
   number: {
     color: Colors.accent,
     fontSize: 22,
+    fontFamily: "open-sans",
   },
 });

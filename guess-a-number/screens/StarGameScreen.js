@@ -11,6 +11,7 @@ import {
 
 /* -------------------- imported components and screens -------------------- */
 
+import DefaultStyles from "../constants/default-styles";
 import Card from "../components/Card";
 import Colors from "../constants/colors";
 import Input from "../components/Input";
@@ -58,7 +59,7 @@ const StarGameScreen = (props) => {
   if (confirmed) {
     confirmedOutput = (
       <Card style={styles.summaryContainer}>
-        <Text>You Selected</Text>
+        <Text style={DefaultStyles.bodyText}>You Selected</Text>
         <NumberContainer>{selectedNumber}</NumberContainer>
         <Button
           title="START GAME"
@@ -77,7 +78,7 @@ const StarGameScreen = (props) => {
       <View style={styles.screen}>
         <Text style={styles.title}>Start a New Game!</Text>
         <Card style={styles.inputContainer}>
-          <Text>Select a Number</Text>
+          <Text style={DefaultStyles.bodyText}>Select a Number</Text>
           <Input
             style={styles.input}
             blurOnSubmit
@@ -125,6 +126,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     marginVertical: 10,
+    fontFamily: "open-sans-bold",
   },
 
   inputContainer: {
@@ -136,6 +138,7 @@ const styles = StyleSheet.create({
   input: {
     width: 50,
     textAlign: "center",
+    fontFamily: "open-sans",
   },
 
   buttonContainer: {
