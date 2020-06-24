@@ -4,6 +4,12 @@ import * as Font from "expo-font";
 import { AppLoading } from "expo";
 import { enableScreens } from "react-native-screens";
 
+import {
+  useFonts,
+  OpenSans_400Regular,
+  OpenSans_700Bold,
+} from "@expo-google-fonts/open-sans";
+
 /* --------------------------- imported components -------------------------- */
 
 import MealsNavigator from "./navigation/MealsNavigator";
@@ -12,8 +18,8 @@ import MealsNavigator from "./navigation/MealsNavigator";
 
 const fetchFonts = () => {
   return Font.loadAsync({
-    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
-    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+    "open-Sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+    "open-Sans-Bold": require("./assets/fonts/OpenSans-Bold.ttf"),
   });
 };
 
@@ -25,12 +31,12 @@ enableScreens(); //melhora a performance - libera nativamente
 export default function App() {
   /* -------------------- Verifica se a fonte foi carregada ------------------- */
 
-  const [fontLoaded, setFontLoaded] = useState(false);
-  if (!fontLoaded) {
+  const [dataLoaded, setDataLoaded] = useState(false);
+  if (!dataLoaded) {
     return (
       <AppLoading
         startAsync={fetchFonts}
-        onFinish={() => setFontLoaded(true)}
+        onFinish={() => setDataLoaded(true)}
         onError={(err) => console.log(err)}
       />
     );
