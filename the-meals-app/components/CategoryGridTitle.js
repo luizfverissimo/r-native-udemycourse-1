@@ -7,7 +7,9 @@ const CategoryGridTitle = (props) => {
       <View
         style={{ ...styles.container, ...{ backgroundColor: props.color } }}
       >
-        <Text style={styles.title}>{props.title}</Text>
+        <Text style={styles.title} numberOfLines={2}>
+          {props.title}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -37,5 +39,6 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: "open-sans-bold",
     fontSize: 22,
+    textAlign: "right",
   },
 });
