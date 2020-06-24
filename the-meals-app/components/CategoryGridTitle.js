@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontFamily: "open-sans",
+    fontFamily: "open-sans-bold",
     fontSize: 22,
   },
 });
