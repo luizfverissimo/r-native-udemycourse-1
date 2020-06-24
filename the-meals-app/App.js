@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
+import { enableScreens } from "react-native-screens";
 
 /* --------------------------- imported components -------------------------- */
 
@@ -15,6 +16,9 @@ const fetchFonts = () => {
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
   });
 };
+
+/* --------------------------------- Funções -------------------------------- */
+enableScreens(); //melhora a performance - libera nativamente
 
 /* -------------------------------- Component ------------------------------- */
 
