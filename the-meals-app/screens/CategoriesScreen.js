@@ -4,7 +4,6 @@ import {
   Text,
   FlatList,
   View,
-  TouchableOpacity,
 } from "react-native";
 
 import { HeaderButtons, Item } from "react-navigation-header-buttons";

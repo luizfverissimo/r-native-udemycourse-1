@@ -4,6 +4,14 @@ import * as Font from "expo-font";
 import { AppLoading } from "expo";
 import { enableScreens } from "react-native-screens";
 
+/* ---------------------------------- Redux --------------------------------- */
+
+import { createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
+import mealsReducer from "./store/reducers/meals";
+
+/* ------------------------------ Custom fonts ------------------------------ */
+
 import {
   useFonts,
   OpenSans_400Regular,
@@ -26,6 +34,13 @@ const fetchFonts = () => {
 /* --------------------------------- Funções -------------------------------- */
 enableScreens(); //melhora a performance - libera nativamente
 
+/* ------------------------------ Create Store ------------------------------ */
+//Combina multiplos reducers em um só para cria o armazenamento
+const rootReducers = combineReducers({
+  meals: mealsReducer,
+});
+const store = createStore(rootReducers);
+
 /* -------------------------------- Component ------------------------------- */
 
 export default function App() {
@@ -44,7 +59,11 @@ export default function App() {
 
   /* -------------------------- Conteúdo renderizado -------------------------- */
 
-  return <MealsNavigator />;
+  return (
+    <Provider store={store}>
+      <MealsNavigator />
+    </Provider>
+  );
 }
 
 const styles = StyleSheet.create({});

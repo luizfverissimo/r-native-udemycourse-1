@@ -1,59 +1,87 @@
-import React from "react";
-import {
-  StyleSheet,
-  Image,
-  Text,
-  View,
-  ScrollView,
-} from "react-native";
+import React, { useEffect, useCallback, useState} from "react";
+import { StyleSheet, Image, Text, View, ScrollView } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { useSelector, useDispatch } from "react-redux";
 
-import { MEALS } from "../data/dummy-data";
+import {toggleFavorite} from '../store/actions/meals'
+
 import HeaderButton from "../components/HeaderButton";
 import DefaultText from "../components/DefaultText";
 import Colors from "../constants/Colors";
-import { List } from "react-native-paper";
 
-const ListItem = props => {
-  return <View style={styles.listItem} >
-    <DefaultText>{props.children}</DefaultText>
-  </View>
-}
+const ListItem = (props) => {
+  return (
+    <View style={styles.listItem}>
+      <DefaultText>{props.children}</DefaultText>
+    </View>
+  );
+};
 
 const MealDetailScreen = (props) => {
+  const avaliableMeals = useSelector((state) => state.meals.meals);
   const mealId = props.navigation.getParam("mealId");
 
-  const selectedMeal = MEALS.find((meal) => meal.id === mealId);
+  const currMealIsFav = useSelector(state => state.meals.favoriteMeals.some(meal =>  meal.id === mealId))  
+
+  const selectedMeal = avaliableMeals.find((meal) => meal.id === mealId);
+
+  const dispatch = useDispatch()
+
+  const toggleFavoriteHandler = useCallback(() => {
+    dispatch(toggleFavorite(mealId))
+  }, [dispatch, mealId])
+
+/* ------------------------------- Set Params ------------------------------- */
+
+  useEffect(() => {
+    props.navigation.setParams({isFav: currMealIsFav})
+  }, [currMealIsFav])
+
+  useEffect(() => {
+    props.navigation.setParams({ toggleFav: toggleFavoriteHandler});
+  }, [toggleFavoriteHandler]);
+
+/* --------------------------------- Render --------------------------------- */
 
   return (
     <ScrollView>
-      <Image source={{uri: selectedMeal.imageUrl}} style={styles.image}/>
+      <Image source={{ uri: selectedMeal.imageUrl }} style={styles.image} />
       <View style={styles.details}>
         <DefaultText>{selectedMeal.duration} m</DefaultText>
         <DefaultText>{selectedMeal.complexity.toUpperCase()}</DefaultText>
         <DefaultText>{selectedMeal.affordability.toUpperCase()}</DefaultText>
       </View>
       <Text style={styles.title}>Ingredients</Text>
-      {selectedMeal.ingredients.map(ingredient => <ListItem key={ingredient}>{ingredient}</ListItem>)}
+      {selectedMeal.ingredients.map((ingredient) => (
+        <ListItem key={ingredient}>{ingredient}</ListItem>
+      ))}
       <Text style={styles.title}>Steps</Text>
-      {selectedMeal.steps.map(steps => <ListItem key={steps}>{steps}</ListItem>)}
+      {selectedMeal.steps.map((steps) => (
+        <ListItem key={steps}>{steps}</ListItem>
+      ))}
     </ScrollView>
   );
 };
 
+/* --------------------------- Navigation Options --------------------------- */
+
 MealDetailScreen.navigationOptions = (navigationData) => {
-  const mealId = navigationData.navigation.getParam("mealId");
-  const selectedMeal = MEALS.find((meal) => meal.id === mealId);
+  //const mealId = navigationData.navigation.getParam("mealId");
+  const mealTitle = navigationData.navigation.getParam('mealTitle')
+  const toggleFavorite = navigationData.navigation.getParam('toggleFav')
+  const isFavorite = navigationData.navigation.getParam('isFav')
+
+  //const selectedMeal = MEALS.find((meal) => meal.id === mealId);
 
   return {
-    headerTitle: selectedMeal.title,
+    headerTitle: mealTitle,
     headerRight: () => {
       return (
         <HeaderButtons HeaderButtonComponent={HeaderButton}>
           <Item
             title="Favorite"
-            iconName="ios-star"
-            onPress={() => console.log("mark as fovorite")}
+            iconName={isFavorite ? 'ios-star' : 'ios-star-outline'}
+            onPress={toggleFavorite}
           />
         </HeaderButtons>
       );
@@ -63,24 +91,26 @@ MealDetailScreen.navigationOptions = (navigationData) => {
 
 export default MealDetailScreen;
 
+/* --------------------------------- Styles --------------------------------- */
+
 const styles = StyleSheet.create({
-  image:{
-    width: '100%',
-    height: 200
+  image: {
+    width: "100%",
+    height: 200,
   },
   details: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 15,
-    justifyContent: 'space-around',
+    justifyContent: "space-around",
     backgroundColor: Colors.accentColor,
-    elevation: 3
+    elevation: 3,
   },
 
   title: {
     marginVertical: 8,
-    fontFamily: 'open-Sans-Bold',
+    fontFamily: "open-Sans-Bold",
     fontSize: 22,
-    textAlign: 'center'
+    textAlign: "center",
   },
 
   listItem: {
@@ -89,6 +119,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.accentColor,
     borderWidth: 1,
     padding: 10,
-    borderRadius: 5
-  }
+    borderRadius: 5,
+  },
 });
