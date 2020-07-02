@@ -1,6 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View, FlatList, Button } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+
+import * as cartActions from '../../store/actions/cart'
+import * as orderActions from '../../store/actions/order'
 
 import Colors from "../../constants/colors";
 
@@ -19,8 +22,10 @@ const CartScreen = (props) => {
         sum: state.cart.items[key].sum,
       });
     }
-    return transformedCartItems;
+    return transformedCartItems.sort((a, b) => a.productId > b.productId ? 1 : -1);
   });
+
+  const dispatch = useDispatch()
 
   return (
     <View style={styles.screen}>
@@ -33,6 +38,9 @@ const CartScreen = (props) => {
           title="Order Now"
           color={Colors.price}
           disabled={cartItems.length === 0}
+          onPress={() => {
+            dispatch(orderActions.addOrder(cartItems, cartTotalAmount))
+          }}
         />
       </View>
         <FlatList
@@ -44,13 +52,20 @@ const CartScreen = (props) => {
               quantity={itemData.item.quantity}
               title={itemData.item.productTitle}
               amount={itemData.item.sum}
-              onRemove={() => {}}
+              deletable
+              onRemove={() => {
+                dispatch(cartActions.removerFromCart(itemData.item.productId))
+              }}
             />)            
           }}
         />
     </View>
   );
 };
+
+CartScreen.navigationOptions = {
+  headerTitle: 'Your Cart'
+}
 
 export default CartScreen;
 
