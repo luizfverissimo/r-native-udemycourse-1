@@ -1,36 +1,71 @@
-import React from "react";
-import { StyleSheet, FlatList, Button, Alert } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  FlatList,
+  Button,
+  Alert,
+  ActivityIndicator,
+  View,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import HeaderButton from "../../components/UI/HeaderButton";
 import ProductItem from "../../components/shop/ProductItem";
-import Colors from '../../constants/colors'
+import Colors from "../../constants/colors";
 
-import * as productsAction from '../../store/actions/products'
+import * as productsAction from "../../store/actions/products";
 
 const UserProductsScreen = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+
   const userProducts = useSelector((state) => state.products.userProducts);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  const deleteDispatchHandler = async (id) => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(productsAction.deleteProduct(id));
+    } catch (error) {
+      setError(error.message);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert("An error occurred!", error, [{ text: "Okay" }]);
+    }
+  }, [error]);
 
   const deleteHandler = (id) => {
-    Alert.alert('Are you sure?', 'Do you really want to delete this item?', [
+    Alert.alert("Are you sure?", "Do you really want to delete this item?", [
       {
-        text: 'No',
-        style: 'default'
+        text: "No",
+        style: "default",
       },
       {
-        text: 'Yes',
-        style: 'destructive',
-        onPress: () => dispatch(productsAction.deleteProduct(id))
-      }
-    ])
-  }
+        text: "Yes",
+        style: "destructive",
+        onPress: () => deleteDispatchHandler(id),
+      },
+    ]);
+  };
 
-  const editProductHandler = id => {
-    props.navigation.navigate('EditProduct', {
-      productId: id
-    })
+  const editProductHandler = (id) => {
+    props.navigation.navigate("EditProduct", {
+      productId: id,
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
   }
 
   return (
@@ -43,12 +78,16 @@ const UserProductsScreen = (props) => {
             image={itemData.item.imageUrl}
             title={itemData.item.title}
             price={itemData.item.price}
-            onSelect={() => {editProductHandler(itemData.item.id)}}
+            onSelect={() => {
+              editProductHandler(itemData.item.id);
+            }}
           >
             <Button
               color={Colors.primary}
               title="Edit"
-              onPress={() =>{editProductHandler(itemData.item.id)}}
+              onPress={() => {
+                editProductHandler(itemData.item.id);
+              }}
             />
             <Button
               color={Colors.primary}
@@ -85,7 +124,7 @@ UserProductsScreen.navigationOptions = (navData) => {
             title="Add"
             iconName={"md-create"}
             onPress={() => {
-              navData.navigation.navigate('EditProduct');
+              navData.navigation.navigate("EditProduct");
             }}
           />
         </HeaderButtons>
@@ -96,4 +135,10 @@ UserProductsScreen.navigationOptions = (navData) => {
 
 export default UserProductsScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

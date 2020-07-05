@@ -17,10 +17,9 @@ import * as productsActions from "../../store/actions/products";
 import HeaderButton from "../../components/UI/HeaderButton";
 import Colors from "../../constants/colors";
 
-
-
 const ProductsOverviewScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const [error, setError] = useState()
 
   const products = useSelector((state) => state.products.availableProducts);
@@ -28,17 +27,18 @@ const ProductsOverviewScreen = (props) => {
 
   const loadProducts = useCallback(async () => {
     setError(null)
-    setIsLoading(true);
+    setIsRefreshing(true)
     try {
       await dispatch(productsActions.fetchProducts());
     } catch (err) {
       setError(err.message)
-    }      
-    setIsLoading(false);
-  }, [dispatch, setIsLoading, setError]);
+    }
+    setIsRefreshing(false)      
+  }, [dispatch, setIsRefreshing, setError]);
 
   useEffect(() => {
-    loadProducts();
+    setIsLoading(true);
+    loadProducts().then(() => setIsLoading(false));
   }, [dispatch, loadProducts]);
 
   useEffect(() => {
@@ -83,6 +83,8 @@ const ProductsOverviewScreen = (props) => {
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isRefreshing}
       data={products}
       renderItem={(itemData) => (
         <ProductItem
