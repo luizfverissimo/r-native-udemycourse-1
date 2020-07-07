@@ -6,6 +6,7 @@ import {
   Alert,
   ActivityIndicator,
   View,
+  Text,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -66,6 +67,14 @@ const UserProductsScreen = (props) => {
         <ActivityIndicator size="large" color={Colors.primary} />
       </View>
     );
+  }
+
+  if (userProducts.length === 0) {
+    return (
+      <View style={styles.centered}>
+        <Text style={{fontFamily:'openSans'}} >No prodcuts found, maybe start creating some?</Text>
+      </View>
+    )
   }
 
   return (
