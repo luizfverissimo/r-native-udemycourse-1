@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -16,6 +16,17 @@ import Colors from "../constants/Colors";
 const LocationPicker = (props) => {
   const [isFecthingState, setIsFecthingState] = useState(false);
   const [pickedLocation, setPickedLocation] = useState();
+  
+  const mapPickedLocation = props.navigation.getParam('pickedLocation')
+
+  const {onLocationPicked} = props
+
+  useEffect(() => {
+    if (mapPickedLocation) {
+      setPickedLocation(mapPickedLocation)
+      props.onLocationPicked(mapPickedLocation)
+    }
+  }, [mapPickedLocation, onLocationPicked])
 
   const verifyPermissions = async () => {
     const result = await Permissions.askAsync(Permissions.LOCATION);
@@ -45,6 +56,11 @@ const LocationPicker = (props) => {
         lat: location.coords.latitude,
         lng: location.coords.longitude,
       });
+      
+      props.onLocationPicked({
+        lat: location.coords.latitude,
+        lng: location.coords.longitude,
+      })
     } catch (err) {
       Alert.alert(
         "Could not fetch location!",
@@ -55,20 +71,31 @@ const LocationPicker = (props) => {
     setIsFecthingState(false);
   };
 
+  const pickOnMapHandle = () => {
+    props.navigation.navigate('Map')
+  }
+
   return (
     <View style={styles.locationPicker}>
-      <MapPreview style={styles.mapPreview} location={pickedLocation}>
+      <MapPreview style={styles.mapPreview} location={pickedLocation} onPress={pickOnMapHandle} >
         {isFecthingState ? (
           <ActivityIndicator size="small" color={Colors.accent} />
         ) : (
           <Text>No location chosen yet.</Text>
         )}
       </MapPreview>
+      <View  style={styles.actions}>
       <Button
         title="Get User Location"
         color={Colors.accent}
         onPress={getLocationHandler}
       />
+      <Button
+        title="Pick on Map"
+        color={Colors.accent}
+        onPress={pickOnMapHandle}
+      />
+      </View>
     </View>
   );
 };
@@ -86,4 +113,10 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderWidth: 1,
   },
+
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%'
+  }
 });

@@ -1,13 +1,30 @@
 import * as FileSystem from "expo-file-system";
 import { insertPlace, fetchPlaces } from "../helpers/db";
+import * as Random from 'expo-random';
+
+import { API_KEY } from "react-native-dotenv";
 
 export const ADD_PLACE = "ADD_PLACE";
 export const SET_PLACES = 'SET_PLACES'
 
-export const addPlace = (title, image) => {
+export const addPlace = (title, image, location) => {
   return async (dispatch) => {
-    const fileName = image.split("/").pop;
+    const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=${API_KEY}`)
+
+    if (!response.ok) {
+      throw new Error('Something went wrong!')
+    }
+
+    const resData = await response.json()
+    if (!resData){
+      throw new Error('Something went wrong!')
+    }
+
+    const address = resData.results[0].formatted_address
+
+    const fileName = await Random.getRandomBytesAsync(1)
     const newPath = FileSystem.documentDirectory + fileName;
+  
 
     try {
       await FileSystem.moveAsync({
@@ -18,9 +35,9 @@ export const addPlace = (title, image) => {
       const dbResult = await insertPlace(
         title,
         newPath,
-        "Dummy Address",
-        15.6,
-        12.3
+        address,
+        location.lat,
+        location.lng,
       );
 
       dispatch({
@@ -29,6 +46,11 @@ export const addPlace = (title, image) => {
           id: dbResult.insertId,
           title: title,
           image: newPath,
+          address: address,
+          coords: {
+            lat: location.lat,
+            lng: location.lng
+          }
         },
       });
 
