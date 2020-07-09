@@ -7,7 +7,7 @@
     "orientation": "portrait",
     "icon": "./assets/shopicon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/shopicontrans.png",
       "resizeMode": "contain",
       "backgroundColor": "#1ba681"
     },
