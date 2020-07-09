@@ -11,3 +11,5 @@ web-build/
 
 # macOS
 .DS_Store
+
+great-places-app/app.json
