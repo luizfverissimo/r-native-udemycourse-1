@@ -1,14 +1,16 @@
 {
   "expo": {
-    "name": "great-places-app",
-    "slug": "great-places-app",
+    "name": "Great Places",
+    "description": "App Great Places, salva uma imagem e local de um lugar bonito.",
+    "slug": "great-places",
     "version": "1.0.0",
+    "privacy": "unlisted",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/places.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash_icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#171717"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -18,6 +20,12 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/places-adaptive.png",
+        "backgroundColor": "#171717"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
